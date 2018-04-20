@@ -6,12 +6,14 @@ public class Transaction {
     private final String who;
     private final Date when;
     private final double amount;
+    private int index;
 
-    public Transaction(String name, Date trantime, double tranamount)
+    public Transaction(String name, Date trantime, double tranamount, int i)
     {
         who = name;
         when = trantime;
         amount = tranamount;
+        index = i;
     }
 
     public String toString() {
@@ -22,7 +24,21 @@ public class Transaction {
     {
         public int compare(Transaction v, Transaction w)
         {
-            return v.who.compareTo(w.who);
+            if (v.who.compareTo(w.who) != 0)
+                return v.who.compareTo(w.who);
+            return 0;
+        }
+    }
+
+    public static class WhoOrderWithIndex implements Comparator<Transaction>
+    {
+        public int compare(Transaction v, Transaction w)
+        {
+            if (v.who.compareTo(w.who) != 0)
+                return v.who.compareTo(w.who);
+            if (v.index < w.index) return -1;
+            if (v.index > w.index) return 1;
+            return 0;
         }
     }
 
@@ -40,6 +56,8 @@ public class Transaction {
         {
             if (v.amount < w.amount) return -1;
             if (v.amount > w.amount) return 1;
+            if (v.amount == w.amount && v.index < w.index) return -1;
+            if (v.amount == w.amount && v.index > w.index) return 1;
             return 0;
         }
     }
