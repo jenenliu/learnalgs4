@@ -95,5 +95,8 @@ public class OrderedSequentialSearchST3_1_3<Key extends Comparable<Key>, Value> 
 
         for (String s : st.keys())
             StdOut.println(s + " " + st.get(s));
+
+        StdOut.println(st.min());
+        StdOut.println(st.max());
     }
 }
