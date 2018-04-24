@@ -58,7 +58,7 @@ public class InsertSort {
         Transaction[] a = {p1, p2, p3,p6, p5, p4, p7, p8};
         StdOut.println("original");
         printTransation(a);
-        selectsort(a, new Transaction.WhoOrder());
+        sort(a, new Transaction.WhoOrder());
         StdOut.println("\n" + "=================who order====================");
         printTransation(a);
         selectsort(a, new Transaction.WhoOrderWithIndex());
