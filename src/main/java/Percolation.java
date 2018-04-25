@@ -18,7 +18,7 @@ public class Percolation {
 
     private int getInd(int row, int col)
     {
-        return (row-1) + num * (col - 1);
+        return (row-1) * num + (col - 1);
     }
 
     private boolean connected(int p, int q)
@@ -61,19 +61,19 @@ public class Percolation {
         }
         if (row - 1 >= 1 && isOpen(row-1, col))
         {
-            union(ind-1, ind);
+            union(ind-num, ind);
         }
         if (row + 1 <= num && isOpen(row+1, col))
         {
-            union(ind+1, ind);
+            union(ind+num, ind);
         }
         if (col - 1 >= 1 && isOpen(row, col-1))
         {
-            union(ind- num, ind);
+            union(ind- 1, ind);
         }
         if (col + 1 <= num && isOpen(row, col+1))
         {
-            union(ind+ num, ind);
+            union(ind+ 1, ind);
         }
     }
 
@@ -89,14 +89,13 @@ public class Percolation {
     {
         if (row < 1 || row > num || col < 1 || col > num)
             throw new IllegalArgumentException();
-        if (row == 1 && isOpen(row, col))
-            return true;
-        int ind = getInd(row, col);
-
         if (!isOpen(row, col))
             return false;
+        if (row == 1 )
+            return true;
+        int ind = getInd(row, col);
         int p = find(ind);
-        if (p != ind && p < num)
+        if (p >= 0 && p <= getInd(1, num))
             return true;
         return false;
 //        for (int i = 1; i <= num; i++)
@@ -131,6 +130,8 @@ public class Percolation {
         percolation.open(1, 1);
 //        StdOut.println("opensites = " + percolation.numberOfOpenSites());
         StdOut.println("isfull:" + percolation.isFull(1, 1));
+        percolation.open(2,6);
+        StdOut.println("isfull:" + percolation.isFull(2,6));
         percolation.open(5, 1);
 //        StdOut.println("opensites = " + percolation.numberOfOpenSites());
         StdOut.println("isfull:" + percolation.isFull(5, 1));
