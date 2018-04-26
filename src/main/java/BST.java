@@ -10,12 +10,14 @@ public class BST<Key extends Comparable<Key>, Value> {
         private Value val;
         private Node left, right;
         private int N;
+        private int height;
 
-        public Node(Key key, Value val, int N)
+        public Node(Key key, Value val, int N, int h)
         {
             this.key = key;
             this.val = val;
             this.N = N;
+            this.height = h;
         }
 
 
@@ -53,13 +55,28 @@ public class BST<Key extends Comparable<Key>, Value> {
 
     private Node put(Node x, Key key, Value val)
     {
-        if (x == null) return new Node(key, val, 1);
+        if (x == null) return new Node(key, val, 1, 1);
         int cmp = key.compareTo(x.key);
         if (cmp < 0) x.left = put(x.left, key, val);
         else if (cmp > 0) x.right = put(x.right, key, val);
         else x.val = val;
         x.N = size(x.left) + size(x.right) + 1;
+        x.height = 1 + Math.max(height_store(x.left), height_store(x.right));
         return x;
+    }
+
+    public int height_store()
+    {
+        return height_store(root);
+    }
+
+    private int height_store(Node x)
+    {
+        if (x == null) return 0;
+        if (x.left == null && x.right == null) return 1;
+        if (x.left == null)  return x.right.height;
+        if (x.right == null) return x.left.height;
+        return Math.max(1 + x.left.height, 1 + x.right.height);
     }
 
     public Key min()
@@ -140,7 +157,24 @@ public class BST<Key extends Comparable<Key>, Value> {
         if (x.left == null) return x.right;
         x.left = deleteMin(x.left);
         x.N = size(x.left) + size(x.right) + 1;
+        x.height = 1 + Math.max(height_store(x.left), height_store(x.right));
         return x;
+    }
+
+    public int height()
+    {
+        return height(root);
+    }
+
+    private int height(Node x)
+    {
+        if (x == null) return 0;
+        if (x.left == null && x.right == null) return 1;
+        if (x.left == null) return 1 + height(x.right);
+        else if (x.right == null) return 1 + height(x.left);
+        else if (height(x.left) > height(x.right)) return 1 + height(x.left);
+        else if (height(x.right) > height(x.left)) return 1 + height(x.right);
+        else return height(x.left);
     }
 
     public void delete(Key key)
@@ -164,6 +198,7 @@ public class BST<Key extends Comparable<Key>, Value> {
             x.left = t.left;
         }
         x.N = size(x.left) + size(x.right) + 1;
+        x.height = 1 + Math.max(height_store(x.left), height_store(x.right));
         return x;
     }
 
@@ -192,9 +227,23 @@ public class BST<Key extends Comparable<Key>, Value> {
     public static void main(String[] args) {
         BST<String, Integer> bst = new BST<String, Integer>();
         bst.put("k", 24);
+        StdOut.println(bst.height());
         bst.put("c", 30);
+        StdOut.println(bst.height());
+        bst.put("d", 3);
+        StdOut.println(bst.height());
+        bst.put("b", 1);
+        StdOut.println(bst.height());
         bst.put("r", 1);
+        StdOut.println(bst.height());
         bst.put("p", 3);
-        StdOut.println(bst.get("p"));
+        StdOut.println(bst.height());
+        bst.put("o", 1);
+        StdOut.println(bst.height());
+        bst.delete("c");
+        bst.delete("o");
+//        StdOut.println(bst.get("p"));
+        StdOut.println(bst.height());
+//        StdOut.println(bst.height_store());
     }
 }
