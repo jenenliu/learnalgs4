@@ -73,10 +73,7 @@ public class BST<Key extends Comparable<Key>, Value> {
     private int height_store(Node x)
     {
         if (x == null) return 0;
-        if (x.left == null && x.right == null) return 1;
-        if (x.left == null)  return x.right.height;
-        if (x.right == null) return x.left.height;
-        return Math.max(1 + x.left.height, 1 + x.right.height);
+        return 1 + Math.max(height_store(x.left), height_store(x.right));
     }
 
     public Key min()
@@ -170,11 +167,7 @@ public class BST<Key extends Comparable<Key>, Value> {
     {
         if (x == null) return 0;
         if (x.left == null && x.right == null) return 1;
-        if (x.left == null) return 1 + height(x.right);
-        else if (x.right == null) return 1 + height(x.left);
-        else if (height(x.left) > height(x.right)) return 1 + height(x.left);
-        else if (height(x.right) > height(x.left)) return 1 + height(x.right);
-        else return height(x.left);
+        return 1 + Math.max(height(x.left), height(x.right));
     }
 
     public void delete(Key key)
@@ -228,22 +221,30 @@ public class BST<Key extends Comparable<Key>, Value> {
         BST<String, Integer> bst = new BST<String, Integer>();
         bst.put("k", 24);
         StdOut.println(bst.height());
+        StdOut.println(bst.height_store());
         bst.put("c", 30);
         StdOut.println(bst.height());
+        StdOut.println(bst.height_store());
         bst.put("d", 3);
         StdOut.println(bst.height());
+        StdOut.println(bst.height_store());
         bst.put("b", 1);
         StdOut.println(bst.height());
+        StdOut.println(bst.height_store());
         bst.put("r", 1);
         StdOut.println(bst.height());
+        StdOut.println(bst.height_store());
         bst.put("p", 3);
         StdOut.println(bst.height());
+        StdOut.println(bst.height_store());
         bst.put("o", 1);
         StdOut.println(bst.height());
+        StdOut.println(bst.height_store());
         bst.delete("c");
         bst.delete("o");
 //        StdOut.println(bst.get("p"));
         StdOut.println(bst.height());
+        StdOut.println(bst.height_store());
 //        StdOut.println(bst.height_store());
     }
 }
