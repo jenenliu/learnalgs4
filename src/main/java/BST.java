@@ -183,10 +183,13 @@ public class BST<Key extends Comparable<Key>, Value> {
             if (parent != null) {
                 parent.pred = x.right;
            }
-           if (x.right != null) {
-               x.right.pred = null;
-               if (x.right.left == null && x.right.right == null)
-                    x.right.succ = parent;
+//           if (x.right != null) {
+//               x.right.pred = null;
+//               if (x.right.left == null && x.right.right == null)
+//                    x.right.succ = parent;
+//            }
+            if (x.right != null) {
+                x.succ.pred = null;
             }
 
             return x.right;
@@ -323,6 +326,10 @@ public class BST<Key extends Comparable<Key>, Value> {
         bst.reversePrintTree();
         bst.deleteMin();
         StdOut.println("第四次删除最小值");
+        bst.printTree();
+        bst.reversePrintTree();
+        bst.deleteMin();
+        StdOut.println("第五次删除最小值");
         bst.printTree();
         bst.reversePrintTree();
 //        bst.addToLast("z", 4);
