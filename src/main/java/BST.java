@@ -8,6 +8,7 @@ public class BST<Key extends Comparable<Key>, Value> {
         private Key key;
         private Value val;
         private Node left, right;
+        private Node pred, succ;
         private int N;
         private int height;
 
@@ -17,8 +18,6 @@ public class BST<Key extends Comparable<Key>, Value> {
             this.N = N;
             this.height = h;
         }
-
-
     }
 
     public int size() {
@@ -46,15 +45,62 @@ public class BST<Key extends Comparable<Key>, Value> {
         root = put(root, key, val);
     }
 
-    private Node put(Node x, Key key, Value val) {
-        if (x == null) return new Node(key, val, 1, 1);
+    private Node put(Node x, Node prex, Key key, Value val)
+    {
+        if (x == null)
+        {
+            x = new Node(key, val, 1, 1);
+            if (prex == null)
+                return x;
+            if (prex.key.compareTo(key) > 0) {
+                x.pred = prex.pred;
+                if (x.pred != null)
+                    x.pred.succ = x;
+                prex.pred = x;
+                x.succ = prex;
+            } else {
+                x.succ = prex.succ;
+                if (x.succ != null)
+                    x.succ.pred = x;
+                prex.succ = x;
+                x.pred = prex;
+            }
+            return x;
+        }
         int cmp = key.compareTo(x.key);
-        if (cmp < 0) x.left = put(x.left, key, val);
-        else if (cmp > 0) x.right = put(x.right, key, val);
+        if (cmp < 0) x.left = put(x.left, x, key, val);
+        else if (cmp > 0) x.right = put(x.right, x, key, val);
         else x.val = val;
         x.N = size(x.left) + size(x.right) + 1;
         x.height = 1 + Math.max(height_store(x.left), height_store(x.right));
         return x;
+    }
+
+    // 测试函数，为了测试pre和succ
+    private void printTree()
+    {
+        Node p = root;
+        // 找到最小节点
+        while (p.left != null)
+            p = p.left;
+        // 然后通过succ来遍历
+        for (; p != null; p = p.succ)
+            StdOut.print(p.key + " ");
+        StdOut.println();
+    }
+
+    private void reversePrintTree()
+    {
+        Node p = root;
+        while (p.right != null)
+            p = p.right;
+        for (; p != null; p = p.pred)
+            StdOut.print(p.key + " ");
+        StdOut.println();
+    }
+
+    private Node put(Node x, Key key, Value val) {
+        return put(x, x, key, val);
     }
 
     public int height_store() {
@@ -129,8 +175,23 @@ public class BST<Key extends Comparable<Key>, Value> {
     }
 
     private Node deleteMin(Node x) {
-        if (x.left == null) return x.right;
-        x.left = deleteMin(x.left);
+        return deleteMin(x, null);
+    }
+
+    private Node deleteMin(Node x, Node parent) {
+        if (x.left == null) {
+            if (parent != null) {
+                parent.pred = x.right;
+           }
+           if (x.right != null) {
+               x.right.pred = null;
+               if (x.right.left == null && x.right.right == null)
+                    x.right.succ = parent;
+            }
+
+            return x.right;
+        }
+        x.left = deleteMin(x.left, x);
         x.N = size(x.left) + size(x.right) + 1;
         x.height = 1 + Math.max(height_store(x.left), height_store(x.right));
         return x;
@@ -248,8 +309,24 @@ public class BST<Key extends Comparable<Key>, Value> {
 //        StdOut.println(bst.height());
 //        StdOut.println(bst.height_store());
         bst.put("o", 1);
-        bst.addToLast("z", 4);
-        bst.addToFirst("a", 3);
+        bst.deleteMin();
+        StdOut.println("第一次删除最小值");
+        bst.printTree();
+        bst.reversePrintTree();
+        bst.deleteMin();
+        StdOut.println("第二次删除最小值");
+        bst.printTree();
+        bst.reversePrintTree();
+        bst.deleteMin() ;
+        StdOut.println("第三次删除最小值");
+        bst.printTree();
+        bst.reversePrintTree();
+        bst.deleteMin();
+        StdOut.println("第四次删除最小值");
+        bst.printTree();
+        bst.reversePrintTree();
+//        bst.addToLast("z", 4);
+//        bst.addToFirst("a", 3);
 //        bst.addToLast("a", 1);
 //        bst.addToFirst("z", 2);
 //        StdOut.println(bst.height());
@@ -260,9 +337,9 @@ public class BST<Key extends Comparable<Key>, Value> {
 //        StdOut.println(bst.height());
 //        StdOut.println(bst.height_store());
 //        StdOut.println(bst.height_store());
-        if (bst.isOrdered())
-            StdOut.println("it is order");
-        else
-            StdOut.println("it is not order");
+//        if (bst.isOrdered())
+//            StdOut.println("it is order");
+//        else
+//            StdOut.println("it is not order");
     }
 }
