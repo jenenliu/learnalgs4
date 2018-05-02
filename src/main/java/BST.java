@@ -267,6 +267,48 @@ public class BST<Key extends Comparable<Key>, Value> {
         return ordered && isOrdered(x.left) && isOrdered(x.right);
     }
 
+    private boolean hasNoDuplicates(Node x) {
+        if (x == null)
+            return true;
+
+        boolean hasdup =  ((x.left != null && max(x.left).key.compareTo(x.key) == 0) ||
+                (x.right != null && min(x.right).key.compareTo(x.key) == 0));
+
+        return !hasdup && hasNoDuplicates(x.left) && hasNoDuplicates(x.right);
+    }
+
+    public boolean hasNoDuplicates() {
+        return hasNoDuplicates(root);
+    }
+
+    public int getItemHeightSum() {
+        return getItemHeightSum(root);
+    }
+
+    // 获取某个节点的深度
+    private int internalpath(Node x, Node p) {
+        if (p == x) return 1;
+        if (x.key.compareTo(p.key) >= 0) p = p.right;
+        else p = p.left;
+        return 1 + internalpath(x, p);
+    }
+
+    // 获取某个节点及其子树的所有节点的深度和
+    private int getItemHeightSum(Node x) {
+        if (x == null) return 0;
+        return internalpath(x, root) + getItemHeightSum(x.left) + getItemHeightSum(x.right);
+    }
+
+    // 题目 3.2.7，计算节点下子树随机节点搜索所需平均比对次数
+    private double avgCompare(Node x) {
+        int size = x.N;
+        return getItemHeightSum(x) * 1.0 / size;
+    }
+
+    public double avgCompare() {
+        return avgCompare(root);
+    }
+
     public boolean isOrdered() {
         return isOrdered(root);
     }
@@ -312,6 +354,8 @@ public class BST<Key extends Comparable<Key>, Value> {
 //        StdOut.println(bst.height());
 //        StdOut.println(bst.height_store());
         bst.put("o", 1);
+        StdOut.println(bst.getItemHeightSum());
+        StdOut.println(bst.avgCompare());
         bst.deleteMin();
         StdOut.println("第一次删除最小值");
         bst.printTree();
@@ -344,9 +388,17 @@ public class BST<Key extends Comparable<Key>, Value> {
 //        StdOut.println(bst.height());
 //        StdOut.println(bst.height_store());
 //        StdOut.println(bst.height_store());
-//        if (bst.isOrdered())
-//            StdOut.println("it is order");
-//        else
-//            StdOut.println("it is not order");
+        bst.put("a", 1);
+        bst.put("a", 2);
+//        bst.addToFirst("a", 2);
+//        bst.addToFirst("b", 3);
+        if (bst.isOrdered())
+            StdOut.println("it is order");
+        else
+            StdOut.println("it is not order");
+        if (bst.hasNoDuplicates())
+            StdOut.println("has not duplicates");
+        else
+            StdOut.println("has duplicates.");
     }
 }

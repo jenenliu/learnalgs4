@@ -262,6 +262,9 @@ public class NonrecursiveBST<Key extends Comparable<Key>, Value> {
 //        StdOut.println(nst.max());
 //        StdOut.println(nst.size());
 //        StdOut.println("");
+        nst.put(110, "a");
+        nst.put(105, "b");
+        nst.put(106, "c");
 
         for (Integer k : nst.keys(5, 101))
         {
