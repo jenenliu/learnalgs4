@@ -1,3 +1,5 @@
+import edu.princeton.cs.algs4.StdOut;
+
 public class RedBlackBST<Key extends Comparable<Key>, Value> {
     private static final boolean RED = true;
     private static final boolean BLACK = false;
@@ -90,5 +92,14 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> {
 
         x.N = size(x.left) + size(x.right) + 1;
         return x;
+    }
+
+    public static void main(String[] args)
+    {
+        RedBlackBST rbt = new RedBlackBST();
+        String[] all = {"Y", "L", "P", "M", "X", "H", "C", "R", "A", "E", "S"};
+        for (String a : all)
+            rbt.put(a, 1);
+        StdOut.println();
     }
 }
