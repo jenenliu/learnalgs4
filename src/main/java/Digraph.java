@@ -27,6 +27,23 @@ public class Digraph {
     public int V() { return V; }
     public int E() { return E; }
 
+    public int inDegree(int v) {
+        return adj[v].size();
+    }
+
+    public int outDegree(int v) {
+        int outdgree = 0;
+        for (int i = 0; i < V; i++)
+            for (int item : adj[i])
+                if (item == v)
+                    outdgree++;
+        return outdgree;
+    }
+
+    public boolean equalDegree(int v) {
+        return inDegree(v) == outDegree(v);
+    }
+
     public void addEdge(int v, int w) {
         adj[v].add(w);
         E++;
