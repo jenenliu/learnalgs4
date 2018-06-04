@@ -8,63 +8,90 @@ import edu.princeton.cs.algs4.StdOut;
 public class QuadraticSCC {
     private boolean[] marked;
     private int[] id;
+    private int[] edgeTo;
     private boolean[] onStack;
     private int count;
     private Stack<Integer> stack;
 
-    public QuadraticSCC(Digraph G, int v) {
+    public QuadraticSCC(Digraph G) {
         marked = new boolean[G.V()];
         id = new int[G.V()];
         onStack = new boolean[G.V()];
+        edgeTo = new int[G.V()];
+        count = 1;
 
-        dfs(G, v, v);
+        for (int v = 0;  v < G.V(); v++) {
+            if (id[v] == 0)
+                dfs(G, v, v);
+        }
     }
 
     private void dfs(Digraph G, int v, int originv) {
         marked[v] = true;
         onStack[v] = true;
         for (int w : G.adj(v)) {
-            if (stack != null)
-                return;
             if (!marked[w]) {
-                id[w] = v;
+                edgeTo[w] = v;
                 dfs(G, w, originv);
             } else if (onStack[w] && w == originv) {
                 stack = new Stack<Integer>();
-                for (int x = v; x != w; x = id[x]) {
+                boolean hascyclenode = false;
+                int cyclecount = 0;
+                for (int x = v; x != w; x = edgeTo[x]) {
+                    if (id[x] != 0) {
+                        hascyclenode = true;
+                        cyclecount = id[x];
+                        break;
+                    }
                     stack.push(x);
                 }
+                for (int x = v; x != w; x = edgeTo[x]) {
+                    if (hascyclenode)
+                        id[x] = cyclecount;
+                    else
+                        id[x] = count;
+                }
                 stack.push(w);
+                if (hascyclenode)
+                    id[w] = cyclecount;
+                else
+                    id[w] = count;
                 stack.push(v);
-                count++;
+                if (!hascyclenode)
+                    count++;
             }
         }
         onStack[v] = false;
+        marked[v] = false;
     }
 
     public void printSCC() {
         Bag<Integer>[] components = new Bag[count];
+        for (int i = 0; i < count; i++)
+            components[i] = new Bag<Integer>();
 
-        for (int i = 0; i < count; i++) {
-            components[i].add(id[i]);
+        for (int i = 0; i < id.length; i++) {
+            components[id[i]].add(i);
         }
 
-        StdOut.println(count + "components");
+        StdOut.println(count-1+components[0].size() + " components");
         for (int i = 0; i < count; i++) {
             for (int c : components[i]) {
-                StdOut.print(c + " ");
+                if (i == 0)
+                    StdOut.println(c);
+                else
+                    StdOut.print(c + " ");
             }
-            StdOut.println();
+            if (i != 0)
+                StdOut.println();
         }
     }
 
     public static void main(String[] args) {
         In in = new In(args[0]);
 
-        QuadraticSCC quadraticSCC = new QuadraticSCC(new Digraph(in), 5);
+        QuadraticSCC quadraticSCC = new QuadraticSCC(new Digraph(in));
 
-        for (int c : quadraticSCC.stack)
-            StdOut.print(c + " ");
-        StdOut.println();
+        quadraticSCC.printSCC();
     }
 }
