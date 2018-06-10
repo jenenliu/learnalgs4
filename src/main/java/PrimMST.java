@@ -8,6 +8,7 @@ public class PrimMST {
     private double[] distTo;
     private boolean[] marked;
     private IndexMinPQ<Double> pq;
+    private double weight;
 
     public PrimMST(EdgeWeightedGraph G) {
         edgeTo = new Edge[G.V()];
@@ -30,6 +31,11 @@ public class PrimMST {
             if (marked[w]) continue;
             if (e.weight() < distTo[w]) {
                 edgeTo[w] = e;
+                if (distTo[w] == Double.POSITIVE_INFINITY)
+                    weight += e.weight();
+                else {
+                    weight = weight - distTo[w] + e.weight();
+                }
                 distTo[w] = e.weight();
                 if (pq.contains(w)) pq.changeKey(w, distTo[w]);
                 else pq.insert(w, distTo[w]);
@@ -53,6 +59,10 @@ public class PrimMST {
         return weight;
     }
 
+    public double eagerweight() {
+        return weight;
+    }
+
     public static void main(String[] args) {
         In in = new In(args[0]);
         EdgeWeightedGraph edgeWeightedGraph = new EdgeWeightedGraph(in);
@@ -62,5 +72,6 @@ public class PrimMST {
             StdOut.println(e.toString());
 
         StdOut.println(primMST.weight());
+        StdOut.println(primMST.eagerweight());
     }
 }

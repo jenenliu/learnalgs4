@@ -5,6 +5,7 @@ import edu.princeton.cs.algs4.StdOut;
 
 public class KruskalMST {
     private Queue<Edge> mst;
+    double weight;
 
     public KruskalMST(EdgeWeightedGraph G) {
         mst = new Queue<Edge>();
@@ -19,6 +20,7 @@ public class KruskalMST {
             if (uf.connected(v,w)) continue;
             uf.union(v, w);
             mst.enqueue(e);
+            weight += e.weight();
         }
     }
 
@@ -34,6 +36,10 @@ public class KruskalMST {
         return weight;
     }
 
+    public double eagerweight() {
+        return weight;
+    }
+
     public static void main(String[] args) {
         In in = new In(args[0]);
         EdgeWeightedGraph edgeWeightedGraph = new EdgeWeightedGraph(in);
@@ -44,5 +50,6 @@ public class KruskalMST {
             StdOut.println(e.toString());
 
         StdOut.println(kruskalMST.weight());
+        StdOut.println(kruskalMST.eagerweight());
     }
 }
