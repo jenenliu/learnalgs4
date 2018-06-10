@@ -1,5 +1,6 @@
 import edu.princeton.cs.algs4.Bag;
 import edu.princeton.cs.algs4.In;
+import edu.princeton.cs.algs4.StdOut;
 
 public class EdgeWeightedGraph {
     private final int V;
@@ -15,7 +16,16 @@ public class EdgeWeightedGraph {
     }
 
     public EdgeWeightedGraph(In in) {
-        this.V = in.readInt();
+        this(in.readInt());
+        in.readInt();
+        while (in.hasNextLine()) {
+            int v = in.readInt();
+            int w = in.readInt();
+            double weight = in.readDouble();
+//            StdOut.println(v + " " + w + " " + weight);
+            Edge edge = new Edge(v, w, weight);
+            addEdge(edge);
+        }
     }
 
     public int V() { return V; }

@@ -35,7 +35,10 @@ public class LazyPrimMST {
     }
 
     public double weight() {
-        return 0.0;
+        double weight = 0;
+        for (Edge e : edges())
+            weight = weight + e.weight();
+        return weight;
     }
 
     public static void main(String[] args) {
