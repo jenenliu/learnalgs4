@@ -17,8 +17,8 @@ public class EdgeWeightedGraph {
 
     public EdgeWeightedGraph(In in) {
         this(in.readInt());
-        in.readInt();
-        while (in.hasNextLine()) {
+        int edges = in.readInt();
+        for (int i = 0; i < edges; i++) {
             int v = in.readInt();
             int w = in.readInt();
             double weight = in.readDouble();
