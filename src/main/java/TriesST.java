@@ -10,7 +10,7 @@ public class TriesST<Value> {
         private Node[] next = new Node[R];
     }
 
-    public Value interactive_get(String key) {
+    public Value interactiveGet(String key) {
         if (root == null)
             return null;
 
@@ -39,7 +39,7 @@ public class TriesST<Value> {
         return get(x.next[c], key, d+1);
     }
 
-    public Node interacitve_put(String key, Value val) {
+    public Node interacitvePut(String key, Value val) {
         if (root == null)
             root = new Node();
         int d = key.length();
@@ -88,8 +88,75 @@ public class TriesST<Value> {
         return cnt;
     }
 
+    public int interactiveSize() {
+        if (root == null) return 0;
+
+        Queue<Node> q = new Queue<Node>();
+        q.enqueue(root);
+        int cnt = 0;
+
+        while (!q.isEmpty()) {
+            Node x = q.dequeue();
+            if (x.val != null)
+                cnt++;
+            for (char c = 0; c < R; c++) {
+                if (x.next[c] != null)
+                    q.enqueue(x.next[c]);
+            }
+        }
+
+        return cnt;
+    }
+
     public Iterable<String> keys() {
         return keysWithPrefix("");
+    }
+
+    // 获取字符串最后一个字符的Node
+    private Node lastCharNode(String s) {
+        Node x = root;
+        if (x == null)
+            return null;
+        int d = s.length();
+        for (int i = 0; i < d; i++) {
+            char c = s.charAt(i);
+            x = x.next[c];
+            if (x == null)
+                return null;
+        }
+        return x;
+    }
+
+    public Iterable<String> interactiveKeysWithPrefix(String pre) {
+        Queue<String> q = new Queue<String>();
+        Node x = lastCharNode(pre);
+        interactiveCollect(x, pre, q);
+        return q;
+    }
+
+    private class MyNode {
+        Node node;
+        String s;
+        public MyNode(Node x, String str) {
+            node = x;
+            s = str;
+        }
+    }
+    public void interactiveCollect(Node x, String pre, Queue<String> q) {
+        if (x == null)
+            return;
+
+        Queue<MyNode> nodeq = new Queue<MyNode>();
+        nodeq.enqueue(new MyNode(x, pre));
+        while (!nodeq.isEmpty()) {
+            MyNode myNode = nodeq.dequeue();
+            if (myNode.node.val != null)
+                q.enqueue(myNode.s);
+            for (char c = 0; c < R; c++) {
+                if (myNode.node.next[c] != null)
+                    nodeq.enqueue(new MyNode(myNode.node.next[c], myNode.s+c));
+            }
+        }
     }
 
     public Iterable<String> keysWithPrefix(String pre) {
@@ -156,18 +223,38 @@ public class TriesST<Value> {
         return null;
     }
 
+    private static void printStrs(Iterable<String> strs) {
+        for (String s : strs) {
+            StdOut.println(s);
+        }
+    }
+
     public static void main(String[] args) {
         TriesST triesST = new TriesST();
         String[] allstr = "by see sells she shells shore the".split(" ");
+        StdOut.println("--------------put strs----------------------");
         for (int i = 0; i < allstr.length; i++)
             triesST.put(allstr[i], i);
-        for (Object out : triesST.keys()) {
-            StdOut.println(out.toString());
-        }
+        StdOut.println("-------------print triesSt.keys()-----------");
+        printStrs(triesST.keys());
+        StdOut.println("-------------print triesSt.iteracvtiveKeys()---");
+        printStrs(triesST.interactiveKeysWithPrefix(""));
+        StdOut.println("-------------print size---------------------");
         StdOut.println(triesST.size());
+        StdOut.println(triesST.interactiveSize());
+        StdOut.println("-------------get test------------------------");
         StdOut.println("Using recursive get, 'by' = " + triesST.get("by") + ", 'shore' = " + triesST.get("shore") +
                 ", 'null' = " + triesST.get("null"));
-        StdOut.println("Using INTERACTIVE get, 'by' = " + triesST.interactive_get("by") + ", 'shore' = " +
-        triesST.interactive_get("shore") + ", 'null' = " + triesST.interactive_get("null"));
+        StdOut.println("Using INTERACTIVE get, 'by' = " + triesST.interactiveGet("by") + ", 'shore' = " +
+        triesST.interactiveGet("shore") + ", 'null' = " + triesST.interactiveGet("null"));
+        StdOut.println("-------------keys with prefix 'sh'-----------------");
+        printStrs(triesST.keysWithPrefix("sh"));
+        StdOut.println("------------interactive keys with prefix 'sh'-------");
+        printStrs(triesST.interactiveKeysWithPrefix("sh"));
+
+        StdOut.println("-------------keys with prefix 's'-----------------");
+        printStrs(triesST.keysWithPrefix("s"));
+        StdOut.println("------------interactive keys with prefix 's'-------");
+        printStrs(triesST.interactiveKeysWithPrefix("s"));
     }
 }
